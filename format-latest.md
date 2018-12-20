@@ -13,7 +13,7 @@ format while format-***version*** in format directory describes the legacy forma
 
 The root of the snail log is presented as below:
 
-```json
+```js
 {
     "version": "0.0.1-beta",       // The current version of snail log.
     "root": "<root>",              // (Optional) JSON string of the root directory to search 
@@ -41,7 +41,7 @@ The root of the snail log is presented as below:
 # Object Entity
 
 A generic representation of the objects in snail log is presented as below:
-```json
+```js
 {
     "trait": "<objectTrait>",      // The trait telling the explorer how to treat the 
                                    // object, like treating it as a flat object directly, 
@@ -57,7 +57,7 @@ A generic representation of the objects in snail log is presented as below:
 ```
 
 For objects which is desired to be presented to user directly, the object will looks like:
-```json
+```js
 {
     "trait": "literal",
     "type": "<objectType>",
@@ -68,7 +68,7 @@ For objects which is desired to be presented to user directly, the object will l
 
 For objects which have field(s) and is desired to be expanded or collapsed (usually complex 
 structures) while exploring, the object will looks like:
-```
+```js
 {
     "trait": "struct",
     "type": "<objectType>",
@@ -82,7 +82,7 @@ structures) while exploring, the object will looks like:
 # Footprint Entity
 
 A foot print is presented in tree structure, the format is presented as below:
-```json
+```js
 {
     "parent": <parentIndex>,       // (Optional) The parent index of this footprint entity, 
                                    // usually the caller function's footprint. If it is
