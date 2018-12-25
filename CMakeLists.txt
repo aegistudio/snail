@@ -28,8 +28,11 @@ project(snail)
 set(CMAKE_CXX_STANDARD 11)
 
 # The partition of configuring the build of the snail.
-option(BUILD_EXPLORER "Whether the snail explorer will be built." ON)
-if(BUILD_EXPLORER) # Begin BUILD_EXPLORER
+option(BUILD_VIEWER "Whether the snail viewer will be built." ON)
+if(BUILD_VIEWER) # Begin BUILD_VIEWER
+
+# Make the include directory to be included by other modules.
+include_directories("include")
 
 # Make sure that the python is installed on the target machine.
 find_package(PythonInterp REQUIRED)
@@ -48,9 +51,28 @@ add_custom_command(OUTPUT ${AMALGAMATED_JSONCPP_SOURCE} COMMAND
 	COMMENT "Amalgamating JsonCpp: ${AMALGAMATED_JSONCPP_SOURCE}." VERBATIM)
 include_directories(${AMALGAMATED_JSONCPP_INCLUDE_DIR})
 
-# Build the viewer executable.
-add_executable(snailview 
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/viewer/main.cpp"
-	"${AMALGAMATED_JSONCPP_SOURCE}")
+# Ensure that Curses (or actually NCurses) is installed and configured.
+find_package(Curses REQUIRED)
+if(${CURSES_FOUND})
+include_directories(${CURSES_INCLUDE_DIRS})
+else()
+message(SEND_ERROR "Curses (or NCurses) must be installed for UI build-up.")
+endif()
 
-endif() # End BUILD_EXPLORER
+# Ensure the POSIX Thread is installed and configured.
+set(CMAKE_THREAD_PREFER_PTHREAD 1)
+find_package(Threads REQUIRED)
+if(NOT ${CMAKE_USE_PTHREADS_INIT})
+message(SEND_ERROR "POSIX Thread (pthread) must be installed for UI build-up.")
+endif()
+
+# Build the viewer executable.
+add_executable(snailviewer
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/snailviewer/main.cpp"
+	
+	# Might provide single thread version soon after configuration is introduced.
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/snailviewer/liveness_pthread.cpp"
+	"${AMALGAMATED_JSONCPP_SOURCE}")
+target_link_libraries(snailviewer ${CURSES_LIBRARIES} Threads::Threads)
+	
+endif() # End BUILD_VIEWER

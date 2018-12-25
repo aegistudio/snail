@@ -18,7 +18,7 @@
  */
 
 /**
- * @file viewer/main.cpp
+ * @file snailviewer/main.cpp
  * @author Haoran Luo
  * @brief Entry point of snail viewer.
  *
