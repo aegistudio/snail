@@ -147,7 +147,7 @@ public:
  *
  * It just provides eye candies for invoking handle interfaces.
  */
-template<> class eventHandler<void*> {
+template<> struct eventHandler<void*> {
 	/// Provides the virtual destructor for an event handler.
 	virtual ~eventHandler() {}
 

@@ -59,19 +59,9 @@ else()
 message(SEND_ERROR "Curses (or NCurses) must be installed for UI build-up.")
 endif()
 
-# Ensure the POSIX Thread is installed and configured.
-set(CMAKE_THREAD_PREFER_PTHREAD 1)
-find_package(Threads REQUIRED)
-if(NOT ${CMAKE_USE_PTHREADS_INIT})
-message(SEND_ERROR "POSIX Thread (pthread) must be installed for UI build-up.")
-endif()
-
 # Build the viewer executable.
 add_executable(snailviewer
 	"${CMAKE_CURRENT_SOURCE_DIR}/src/snailviewer/main.cpp"
-	
-	# Might provide single thread version soon after configuration is introduced.
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/snailviewer/liveness_pthread.cpp"
 	"${AMALGAMATED_JSONCPP_SOURCE}")
 target_link_libraries(snailviewer ${CURSES_LIBRARIES} Threads::Threads)
 	

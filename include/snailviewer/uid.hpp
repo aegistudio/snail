@@ -38,6 +38,9 @@ namespace snailviewer {
  */
 enum class uidType : char {
 	/// The identified component is a module (including the program).
+	/// The name field of a module should also be nil. So that the
+	/// lower module plus author bits can completely identifies the
+	/// modules.
 	module = 0,
 
 	/// The identified component is an event type.
@@ -48,6 +51,9 @@ enum class uidType : char {
 
 	/// The identified component is a key binding.
 	keybind,
+
+	/// The identified component is a color component.
+	color,
 };
 
 /**
@@ -93,6 +99,18 @@ struct uid {
 		if(a[0] == b[0]) return a[1] < b[1];
 		else return a[0] < b[0];
 	}
+
+	/// Compare the equality relationship of two unique ids.
+	bool operator==(const uid& opponent) const noexcept {
+		const long* a = reinterpret_cast<const long*>(this);
+		const long* b = reinterpret_cast<const long*>(&opponent);
+		return a[0] == b[0] && a[1] == b[1];
+	}
+
+	/// Judge whether the id has some type.
+	bool hasType(uidType expectedType) const noexcept {
+		return type == expectedType;
+	}
 };
 
 // Ensure the behavior of unique identity is the same as expected.
@@ -100,6 +118,12 @@ static_assert(sizeof(uid) == 16, "The size of the uid must be 16 bytes.");
 static_assert(	std::is_pod<uid>::value &&
 		std::is_trivially_constructible<uid>::value,
 		"The uid must be a plain old data and can be trivially constructed.");
+
+// The uid representing nulls of some specific types.
+constexpr uid null(uidType type) {
+	return uid {{0, 0, 0, 0, 0}, {0, 0, 0}, type, {0, 0, 0, 0, 0, 0, 0}};
+}
+
 } // namespace snailviewer.
 
 namespace std {
